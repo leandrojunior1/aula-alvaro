@@ -1,0 +1,68 @@
+CREATE DATABASE livraria;
+USE livraria;
+
+
+CREATE TABLE autores (
+    id_autor INT PRIMARY KEY AUTO_INCREMENT,
+    nome VARCHAR(100) NOT NULL,
+    nacionalidade VARCHAR(50)
+);
+
+
+CREATE TABLE livros (
+    isbn VARCHAR(20) PRIMARY KEY, 
+    titulo VARCHAR(200) NOT NULL,
+    ano_pub INT,
+    editora VARCHAR(150),
+    id_autor INT,
+    FOREIGN KEY (id_autor) REFERENCES autores(id_autor)
+);
+
+CREATE TABLE exemplares (
+    num_tombo INT PRIMARY KEY AUTO_INCREMENT,
+    isbn VARCHAR(20) NOT NULL,
+    estado_conservacao VARCHAR(50),
+    FOREIGN KEY (isbn) REFERENCES livros(isbn)
+);
+
+
+CREATE TABLE alunos (
+    RGM VARCHAR(20) PRIMARY KEY,
+    nome VARCHAR(100) NOT NULL,
+    email VARCHAR(100),
+    telefone INT,
+    data_cadastro DATE DEFAULT(CURDATE())
+);
+
+CREATE TABLE telefone_aluno (
+	id_telefone INT AUTO_INCREMENT PRIMARY KEY,
+    RGM VARCHAR(20) NOT NULL,
+    telefone VARCHAR(20) NOT NULL,
+    FOREIGN KEY (RGM) REFERENCES alunos(RGM)
+);
+
+CREATE TABLE livro_autor (
+	id_livro_autor INT AUTO_INCREMENT PRIMARY KEY,
+    isbn VARCHAR(20) NOT NULL,
+    id_autor INT NOT NULL,
+    FOREIGN KEY (isbn) REFERENCES livros(isbn),
+    FOREIGN KEY (id_autor) REFERENCES autor(id_autor),
+    UNIQUE (isbn, id_autor)
+);
+
+CREATE TABLE emprestimos (
+    id_emprestimo INT PRIMARY KEY AUTO_INCREMENT,
+    RGM INT NOT NULL,
+    num_tombo INT NOT NULL,
+    data_retirada DATE NOT NULL,
+    data_prevista_devolucao DATE NOT NULL,
+    data_real_devolucao DATE,
+    FOREIGN KEY (RGM)  REFERENCES alunos(RGM),
+    FOREIGN KEY (num_tombo) REFERENCES exemplares(num_tombo)
+);
+
+
+select * from livros;
+
+select exemplares.isbn, num_tombo from exemplares
+inner join livro on exemplares.isbn = livros.isbn
